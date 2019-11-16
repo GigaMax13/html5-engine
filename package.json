@@ -1,0 +1,30 @@
+{
+  "name": "html5-engine",
+  "version": "0.0.10001",
+  "description": "HTML5 Engine",
+  "author": "Maximiliano Dalla Porta",
+  "private": true,
+  "main": "./src/main.js",
+  "scripts": {
+    "build": "babel src -d build"
+  },
+  "dependencies": {
+    "redux": "^4.0.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.6.0",
+    "@babel/core": "^7.6.0",
+    "@babel/node": "^7.6.1",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-private-methods": "^7.6.0",
+    "@babel/polyfill": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
+    "@babel/preset-react": "^7.7.0",
+    "babel-eslint": "11.0.0-beta.0",
+    "babel-preset-es2017": "^6.24.1",
+    "eslint": "^6.4.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-promise": "^4.2.1"
+  }
+}

@@ -1,5 +1,3 @@
 import Game from './classes/Game';
 
-export {
-  Game,
-};
+export { Game };

@@ -1,6 +1,6 @@
 import Canvas from './Canvas';
 
-const AsyncFunction = (async function(){}).constructor;
+// const AsyncFunction = (async function(){}).constructor;
 
 class Render {
   #context;
@@ -33,58 +33,47 @@ class Render {
     // Math.ceil(this.#context.measureText(text).width)
   };
 
-  createImageBuffer = config => (render) => {
-    try{
-      if(!config || !Object.keys(config).length) {
-        throw new Error('The parameter `config` must be a valid object! i.e. { [key]: value }');
+  createImageBuffer = ({ width, height, name }) => async (transform) => {
+    try {
+      if (!name || name.constructor !== String) {
+        throw new Error('The property `name` must be a valid String! i.e. { name: "..." }');
       }
-
-      const {
-        width,
-        height,
-        name,
-      } = config;
-
-      if(!config.name || config.name.constructor !== String) {
-        throw new Error('The parameter `config` must have a `name` property! i.e. { name: "..." }');
+      if (!width || width.constructor !== Number || width < 0) {
+        throw new Error('The property `width` must be a positive Number i.e. { width: 100 }');
       }
-      if(!config.width || config.width.constructor !== Number) {
-        throw new Error('The parameter `config` must have a `width` property! i.e. { width: 100 }');
+      if (!height || height.constructor !== Number || height < 0) {
+        throw new Error('The property `width` must be a positive Number i.e. { height: 100 }');
       }
-      if(!config.height || config.height.constructor !== Number) {
-        throw new Error('The parameter `config` must have a `height` property! i.e. { height: 100 }');
-      }
-      if(!render/* || (render.constructor !== Function && render.constructor !== AsyncFunction)*/) {
-        throw new Error('The parameter `render` must be a valid function! i.e. () => { ... }');
+      /* || (transform.constructor !== Function && transform.constructor !== AsyncFunction) */
+      if (!transform) {
+        throw new Error('The parameter `transform` must be a valid function! i.e. () => { ... }');
       }
 
       const canvas = Canvas({ width, height });
 
-      render(canvas.context);
+      await transform(canvas.context);
 
-      setTimeout(async () => {
-        this.#buffer[name] = await canvas.image;
-      }, 1e3);
-    }catch(e){
-      throw new Error(e);
+      this.#buffer[name] = await canvas.image;
+    } catch (e) {
+      console.error(e);
     }
   };
 
   deleteImageBuffer = (name) => {
-    try{
-      if(!this.#buffer[name]) {
+    try {
+      if (!this.#buffer[name]) {
         throw new Error(`The image buffer ${name} does not exist!`);
       }
 
       this.#buffer[name] = null;
       delete this.#buffer[name];
-    }catch(e){
-      throw new Error(e);
+    } catch (e) {
+      console.error(e);
     }
   };
 
   drawImageBuffer = (name, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) => {
-    if(this.#buffer[name]) {
+    if (this.#buffer[name]) {
       this.#context.drawImage(this.#buffer[name], sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
     }
   };

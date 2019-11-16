@@ -37,14 +37,24 @@ class Canvas {
   }
 }
 
-export default ({ element = document.createElement("canvas"), width, height }) => {
+export default ({ element = document.createElement('canvas'), width, height }) => {
   try {
-    if (element && element.constructor !== HTMLCanvasElement) {
-      throw new Error('The parameter `element` must be a valid HTMLCanvasElement! i.e. <canvas />');
+    if (!element || element.constructor !== HTMLCanvasElement) {
+      throw new Error('The property `element` must be a valid HTMLCanvasElement! i.e. <canvas />');
+    }
+
+    if (!width || width.constructor !== Number || width < 0) {
+      throw new Error('The property `width` must be a positive Number!');
+    }
+
+    if (!height || height.constructor !== Number || height < 0) {
+      throw new Error('The property `height` must be a positive Number!');
     }
 
     return new Canvas(element, width, height);
   } catch (e) {
-    throw new Error(e);
+    console.error(e);
   }
+
+  return {};
 };

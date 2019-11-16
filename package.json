@@ -4,12 +4,19 @@
   "description": "HTML5 Engine",
   "author": "Maximiliano Dalla Porta",
   "private": true,
-  "main": "./src/main.js",
+  "main": "./build/index.js",
   "scripts": {
-    "build": "babel src -d build"
+    "build": "yarn babel && yarn type-definition",
+    "babel": "babel src -d build",
+    "type-definition": "tsc -p tsconfig.build.types.json",
+    "clear:ts": "yarn move:d.ts && yarn remove:d.ts",
+    "move:d.ts": "mv src/classes/*.d.ts build/classes/ && mv src/index.d.ts build/",
+    "remove:d.ts": "rm src/**/*.d.ts & rm src/**/**/*.d.ts"
   },
   "dependencies": {
-    "redux": "^4.0.4"
+    "redux": "^4.0.4",
+    "redux-thunk": "^2.3.0",
+    "reduxsauce": "^1.1.1"
   },
   "devDependencies": {
     "@babel/cli": "^7.6.0",
@@ -25,6 +32,7 @@
     "eslint": "^6.4.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-promise": "^4.2.1"
+    "eslint-plugin-promise": "^4.2.1",
+    "typescript-temporary-fork-for-jsdoc": "^3.6.0-insiders.20190802"
   }
 }

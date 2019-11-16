@@ -1,11 +1,11 @@
 import Canvas from './Canvas';
 import Render from './Render';
+import Sprite from './Sprite';
 
 class Game {
   #delayTime;
   #isRunning;
   #entities;
-  #showFPS;
   #canvas;
   #render;
   #update;
@@ -16,7 +16,6 @@ class Game {
 
     this.#isRunning = false;
     this.#entities = {};
-    this.#showFPS = false
   }
 
   start = () => {
@@ -27,9 +26,21 @@ class Game {
     }
   };
 
-  toggleFPS = () => this.#showFPS = !this.#showFPS;
+  addSprite = async ({
+    name,
+    width,
+    height,
+    source,
+  }) => Sprite.addSprite({
+    name,
+    width,
+    height,
+    source,
+  });
 
-  addEntity = ({ name, width, height, x, y, visible}, render) => {
+  getSprite = (name) => Sprite.getSprite(name);
+
+  addEntity = ({ name, width, height, x, y, visible }, render) => {
     this.#entities[name] = {
       visible,
       width,
@@ -42,7 +53,7 @@ class Game {
 
   remEntity = name => this.#render.deleteImageBuffer(name);
 
-  moveEntity = (name) => move => {
+  moveEntity = name => move => {
     const { x, y } = this.#entities[name];
 
     const {
@@ -57,13 +68,13 @@ class Game {
     };
   };
 
-  update = update => this.#update = () => update(this.#delayTime);
+  update = update => {
+    this.#update = () => update(this.#delayTime);
+  };
 
   #gameLoop = (maxFPS = 60) => {
     // Simulate 1000 ms / 60 FPS = 16.667 ms per frame every time we run update()
     this.#delayTime = 1000 / 60;
-    // The last time the loop was run
-    let lastTime = performance.now();
     // The last time the frame was updated
     let lastFrameTimeMs = 0;
     let delta = 0;
@@ -85,22 +96,8 @@ class Game {
         delta -= this.#delayTime;
       }
 
-      const now = performance.now();
-      const fps = 1 / ((now - lastTime) / 1000);
-
       // Call draw function to draw our logo to canvas
       this.#draw();
-
-      if (this.#showFPS) {
-        this.#render.write({
-          text: `FPS: ${fps.toFixed(0)}`,
-          fontSize: 10,
-          x: 10,
-          y: 10,
-        });
-      }
-
-      lastTime = now;
 
       // Call loop recursively
       requestAnimationFrame(loop);
@@ -131,22 +128,32 @@ class Game {
   };
 }
 
+/**
+ * Creates a game instance
+ * @constructor
+ * @param {HTMLCanvasElement} element
+ * @param {number} width
+ * @param {number} height
+ * @return {Game}
+ */
 export default (element, width, height) => {
   try {
     if (!element || element.constructor !== HTMLCanvasElement) {
       throw new Error('The parameter `element` must be a valid HTMLCanvasElement! i.e. <canvas/>');
     }
 
-    if (width !== undefined && (width.constructor !== Number || width <=0)) {
+    if (width !== undefined && (width.constructor !== Number || width <= 0)) {
       throw new Error('The parameter `width` must be a positive Number!');
     }
 
-    if (height !== undefined && (height.constructor !== Number || height <=0)) {
+    if (height !== undefined && (height.constructor !== Number || height <= 0)) {
       throw new Error('The parameter `height` must be a positive Number!');
     }
 
     return new Game(element, width, height);
   } catch (e) {
-    throw new Error(e);
+    console.error(e);
   }
-}
+
+  return {};
+};
